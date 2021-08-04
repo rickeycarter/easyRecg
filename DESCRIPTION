@@ -1,0 +1,21 @@
+Package: easyRecg
+Title: Simple tools to facilitate reading and writing digital ECG files
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Rickey",
+           family = "Carter",
+           role = c("aut", "cre"),
+           email = "cater.rickey@mayo.edu",
+           comment = c(ORCID = "0000-0002-0818-273X"))
+Description: A collection of tools that allow moving digital ECGs from XML, numpy and R binary data objects.
+License: `use_mit_license()`
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 4.0.0)
+Imports: 
+    dplyr,
+    scales,
+    tidyr,
+    reticulate
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
