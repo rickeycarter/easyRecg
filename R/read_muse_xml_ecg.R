@@ -37,7 +37,6 @@ read_muse_xml_ecg <- function(file_in, file_out = NA) {
     bin <- base64enc::base64decode(waveform)
     data <- readBin(bin, integer(), samples, size = 2) * amp_per_byte
     lead_data[,id] <- data
-    lead_names <- c(lead_names, id)
   }
   
   # III = II - I
