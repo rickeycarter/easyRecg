@@ -16,6 +16,25 @@ library(jasonlite)
 
 ##### Attempt 1 ##################
 
+
+outdata <- read_muse_xml_ecg("data/muse_xml/1_MUSE_ecg.xml")
+outdata2 <- read_muse_xml_ecg("data/muse_xml/MUSE_20210427_083733_92000.xml")
+
+dim(outdata)
+
+ecgs <- read_muse_xml_directory("data/muse_xml/")
+ecg_data <- ecgs$ecg_array
+print(ecgs$array_order)
+dim(ecg_data)
+
+## check the reading...
+## The 1_MUSE file
+outdata[1, 230:250, 2, 1]== ecg_data[1, 230:250, 2, 1]
+
+outdata2[1, 530:550, 10, 1] == ecg_data[2, 530:550, 10, 1]
+
+
+
 #filename <- "data/1_MUSE_ecg.xml"
 filename <- "data/MUSE_20210427_083733_92000.xml"
 doc <- read_xml(filename,encoding = "ISO-8859-1")
