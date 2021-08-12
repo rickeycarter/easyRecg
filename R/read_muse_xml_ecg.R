@@ -9,9 +9,9 @@
 #' ecg_1 <- read_muse_xml_ecg("1_MUSSE_ecg.xml")
 #' }
 
-read_muse_xml_ecg <- function(file_in, file_out = NA, numpyformat=TRUE) {
+read_muse_xml_ecg <- function(file, file_out = NA, numpyformat=TRUE) {
   # Read XML 
-  doc <- xml2::read_xml(file_in)
+  doc <- xml2::read_xml(file)
   
   # Rhythm is the second Wavefrom (Median first)
   rhythm <- xml2::xml_contents(xml2::xml_child(doc, "Waveform[2]"))
