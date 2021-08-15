@@ -1,6 +1,6 @@
 #' Read a single XML representation of an ECG exported from MUSE. Returns a matrix with data for 12-leads
 #'
-#' @param file_in  Filename for the xml file that will be read
+#' @param file  Filename for the xml file that will be read
 #' @param file_out Filename for exported data.  If NA, no file is written.  Only works if numpyformat is FALSE.
 #' @param numpyformat Logical to determine if the array should be returned as a 5000x12 (FALSE) or a 1x5000 x 12 x 1 (TRUE, Default) format.  The latter is the standard input for AI-ECG algorithms
 #' @export
@@ -57,7 +57,7 @@ read_muse_xml_ecg <- function(file, file_out = NA, numpyformat=TRUE) {
   
   # export a file if the 5000x12 array is the target output.  If numpyformat (4 dimensional array), this is skipped.
   if (!is.na(file_out) & !numpyformat) {
-    write.table(lead_data, file = file_out, row.names = FALSE)
+    utils::write.table(lead_data, file = file_out, row.names = FALSE)
   }
   
   ## Add flag to reshape the array to match standard ECG AI inputs

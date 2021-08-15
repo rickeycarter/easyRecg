@@ -3,7 +3,9 @@
 #' @param filename  Filename for the numpy (.npy) file
 #' @export
 #' @examples
+#' \dontrun{
 #' r_ecg <- read_numpy("digital_ecgs.npy")
+#' }
 read_numpy <- function(filename) {
   ## load the numpy object
   np <- reticulate::import("numpy", convert=T) #Python's number library

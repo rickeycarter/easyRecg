@@ -4,7 +4,9 @@
 #' @param filename  Filename for the numpy (.npy) file that will be produced
 #' @export
 #' @examples
+#' \dontrun{
 #' r_ecg <- read_numpy("digital_ecgs.npy")
+#' }
 write_numpy <- function(rarrayname, filename) {
   ## load the numpy object
   np <-

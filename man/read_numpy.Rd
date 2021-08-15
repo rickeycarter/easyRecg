@@ -13,5 +13,7 @@ read_numpy(filename)
 Read a numpy (python) data array into R
 }
 \examples{
+\dontrun{
 r_ecg <- read_numpy("digital_ecgs.npy")
+}
 }

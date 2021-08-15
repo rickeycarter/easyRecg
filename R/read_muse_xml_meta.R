@@ -6,21 +6,21 @@
 #' @export
 read_muse_xml_meta <- function(file) {
 
-  file_in <- unique(file)
+  file <- unique(file)
   
   if (!all(file.exists(file))) {
     stop("At least 1 file does not exist")
   } 
   
-  parsed_list <- purrr::map(file_in, parse_meta)
+  parsed_list <- purrr::map(file, parse_meta)
   transposed <- purrr::transpose(parsed_list)
-  purrr::map(transposed, bind_rows)
+  purrr::map(transposed, dplyr::bind_rows)
 }
 
-parse_meta <- function(file_in) {
+parse_meta <- function(file) {
   
   # read the xml file
-  doc <- xml2::read_xml(file_in)
+  doc <- xml2::read_xml(file)
   
   # extract components
   muse_info <- list(
@@ -32,11 +32,11 @@ parse_meta <- function(file_in) {
   )
   
   # add in filename as id
-  res <- lapply(muse_info, function(x) {cbind( data.frame(filename = file_in), x) })
+  res <- lapply(muse_info, function(x) {cbind( data.frame(file = file), x) })
   
   # Return a tibble if loaded
   if (any(c("dplyr", "tibble") %in% .packages())) {
-    res <- lapply(muse_info_df, function(x) {dplyr::as_tibble(x)})
+    res <- lapply(res, function(x) {dplyr::as_tibble(x)})
   }
   
   res
@@ -49,5 +49,5 @@ fetch_measurments <- function(doc, path) {
   tmp_list <- xml2::as_list(tmp)
   res <- unlist(tmp_list)
   res <- as.list(res)
-  data.frame(res)
+  janitor::clean_names(data.frame(res))
 }

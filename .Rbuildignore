@@ -1,2 +1,5 @@
 ^easyRecg\.Rproj$
 ^\.Rproj\.user$
+^R/99_scratch_pad_for_reading\.R$
+test/*
+^LICENSE\.md$
