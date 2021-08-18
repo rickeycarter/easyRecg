@@ -7,9 +7,10 @@
 #' @param exclude A named list of data frames and columns to exclude.
 #'    If a data frame is listed with it's element being NA, the entire dataframe is removed. 
 #'    `include` is ran before `exclude` if both are provided.
+#' @param ids A collection of ids to attache to each resulting data frame.  If NA, filepaths are used  
 #' @return A list of data frames (or tibbles)
 #' @export
-read_muse_xml_meta <- function(file, include = NULL, exclude = NULL) {
+read_muse_xml_meta <- function(file, include = NULL, exclude = NULL, ids = NA) {
 
   file <- unique(file)
   
@@ -17,7 +18,15 @@ read_muse_xml_meta <- function(file, include = NULL, exclude = NULL) {
     stop("At least 1 file does not exist")
   } 
   
-  parsed_list <- purrr::map(file, parse_meta)
+  if (!identical(NA, ids) & length(ids) != length(file)) {
+    stop("ids must be NA or same length as file")
+  }
+  
+  if (identical(NA, ids)) {
+    ids <- file
+  }
+  
+  parsed_list <- purrr::map2(file, ids, parse_meta)
   transposed <- purrr::transpose(parsed_list)
   complete_data <- purrr::map(transposed, dplyr::bind_rows)
   
@@ -53,7 +62,7 @@ read_muse_xml_meta <- function(file, include = NULL, exclude = NULL) {
       if (!n %in% names(complete_data)) {
         warning(paste0(n, " is not a dataset returned.  Entry has been ignored."))
       } else {
-        if (is.na(exclude[[n]])) {
+        if (identical(NA, exclude[[n]])) {
           complete_data[[n]] <- NULL
         } else {
           complete_data[[n]] <- dplyr::select(complete_data[[n]], -tidyselect::any_of(exclude[[n]]))
@@ -69,7 +78,7 @@ read_muse_xml_meta <- function(file, include = NULL, exclude = NULL) {
   
 }
 
-parse_meta <- function(file) {
+parse_meta <- function(file, id) {
   
   # read the xml file
   doc <- xml2::read_xml(file)
@@ -84,7 +93,7 @@ parse_meta <- function(file) {
   )
   
   # add in filename as id
-  res <- lapply(muse_info, function(x) {cbind( data.frame(file = file), x) })
+  res <- lapply(muse_info, function(x) {cbind( data.frame(id = id), x) })
   
   # Return a tibble if loaded
   if (any(c("dplyr", "tibble") %in% .packages())) {

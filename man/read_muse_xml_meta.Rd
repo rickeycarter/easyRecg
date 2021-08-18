@@ -4,7 +4,7 @@
 \alias{read_muse_xml_meta}
 \title{Extract meta data from MUSE XML files}
 \usage{
-read_muse_xml_meta(file, include = NULL, exclude = NULL)
+read_muse_xml_meta(file, include = NULL, exclude = NULL, ids = NA)
 }
 \arguments{
 \item{file}{Either a path to a file or a collection of file paths}
@@ -16,6 +16,8 @@ If a data frame is listed with it's element being NA, all columns are returned f
 \item{exclude}{A named list of data frames and columns to exclude.
 If a data frame is listed with it's element being NA, the entire dataframe is removed.
 \code{include} is ran before \code{exclude} if both are provided.}
+
+\item{ids}{A collection of ids to attache to each resulting data frame.  If NA, filepaths are used}
 }
 \value{
 A list of data frames (or tibbles)
