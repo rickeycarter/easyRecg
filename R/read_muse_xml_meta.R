@@ -86,15 +86,35 @@ parse_meta <- function(file, id) {
   # extract components
   muse_info <- list(
     muse = fetch_measurments(doc, path = "MuseInfo"),
+    
     patient_demo = fetch_measurments(doc, path = "PatientDemographics"),
+    patient_demo_original = fetch_measurments(doc, path = "OriginalPatientDemographics"),
+    
     test_demo = fetch_measurments(doc, "TestDemographics"),
+    test_demo_original = fetch_measurments(doc, "OriginalTestDemographics"),
+    
+    order = fetch_measurments(doc, "Order"),
+    order_original = fetch_measurments(doc, "OriginalOrder"),
+    
     resting_ecg = fetch_measurments(doc, "RestingECGMeasurements"),
-    original_resting_ecg = fetch_measurments(doc, "OriginalRestingECGMeasurements")
+    resting_ecg_original = fetch_measurments(doc, "OriginalRestingECGMeasurements"),
+    
+    diagnosis = fetch_measurments(doc, path = "Diagnosis"),
+    diagnosis_original = fetch_measurments(doc, path = "OriginalDiagnosis"),
+    
+    extra_question = fetch_measurments(doc, path = "ExtraQuestions"),
+    extra_question_original = fetch_measurments(doc, path = "OriginalExtraQuestions"),
+    
+    pharma = fetch_measurments(doc, path = "PharmaData"),
+    pharma_original = fetch_measurments(doc, path = "OriginalPharmaData")
   )
   
   # add in filename as id
-  res <- lapply(muse_info, function(x) {cbind( data.frame(id = id), x) })
+  # Use of rep gets the correct number of ids to bind in - needed for nrow(x) == 0 | > 1
+  res <- lapply(muse_info, function(x) {cbind( data.frame(id = rep(id, nrow(x))), x) })
   
+  res <- purrr::discard(res, ~nrow(.) == 0)
+
   # Return a tibble if loaded
   if (any(c("dplyr", "tibble") %in% .packages())) {
     res <- lapply(res, function(x) {dplyr::as_tibble(x)})
