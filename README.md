@@ -76,29 +76,27 @@ dim(all_muse$ecg_array)
 
 ## Retrieving ECG Meta Data
 
-By default, `read_muse_xml_meta` returns the meta data related to Muse
-versions, patient and test demographics, resting ECG measurements, and
-original resting ECG measurements. The returned object is a named list
-of data frames (or tibbles). The function can take a file path or a
-collection of file paths. If more than one file path is present, the
-results are appended together.
+By default, `read_muse_xml_meta` returns all meta data available. The
+returned object is a named list of data frames (or tibbles). The
+function can take a file path or a collection of file paths. If more
+than one file path is present, the results are appended together.
 
 ``` r
 meta1 <- read_muse_xml_meta(file1, ids = 1)
 meta1
-#> $muse
+#> $muse_info
 #> # A tibble: 1 × 2
 #>      id muse_version
 #>   <dbl> <chr>       
 #> 1     1 9.0.9.18167 
 #> 
-#> $patient_demo
+#> $patient_demographics
 #> # A tibble: 1 × 6
 #>      id patient_id patient_age age_units gender patient_last_name
 #>   <dbl> <chr>      <chr>       <chr>     <chr>  <chr>            
 #> 1     1 JAX01234   60          YEARS     MALE   TEST 05          
 #> 
-#> $test_demo
+#> $test_demographics
 #> # A tibble: 1 × 24
 #>      id data_type site  site_name acquisition_device status    edit_list_status
 #>   <dbl> <chr>     <chr> <chr>     <chr>              <chr>     <chr>           
@@ -111,7 +109,7 @@ meta1
 #> #   overreader_first_name <chr>, editor_last_name <chr>,
 #> #   editor_first_name <chr>, his_status <chr>
 #> 
-#> $resting_ecg
+#> $resting_ecg_measurements
 #> # A tibble: 1 × 19
 #>      id ventricular_rate atrial_rate pr_interval qrs_duration qt_interval
 #>   <dbl> <chr>            <chr>       <chr>       <chr>        <chr>      
@@ -121,7 +119,7 @@ meta1
 #> #   p_onset <chr>, p_offset <chr>, t_offset <chr>, ecg_sample_base <chr>,
 #> #   ecg_sample_exponent <chr>, q_tc_frederica <chr>
 #> 
-#> $original_resting_ecg
+#> $original_resting_ecg_measurements
 #> # A tibble: 1 × 19
 #>      id ventricular_rate atrial_rate pr_interval qrs_duration qt_interval
 #>   <dbl> <chr>            <chr>       <chr>       <chr>        <chr>      
@@ -130,6 +128,43 @@ meta1
 #> #   t_axis <chr>, qrs_count <chr>, q_onset <chr>, q_offset <chr>,
 #> #   p_onset <chr>, p_offset <chr>, t_offset <chr>, ecg_sample_base <chr>,
 #> #   ecg_sample_exponent <chr>, q_tc_frederica <chr>
+#> 
+#> $diagnosis
+#> # A tibble: 1 × 8
+#>      id modality diagnosis_statement_stmt_flag diagnosis_state… diagnosis_state…
+#>   <dbl> <chr>    <chr>                         <chr>            <chr>           
+#> 1     1 RESTING  ENDSLINE                      Statement Text(… ENDSLINE        
+#> # … with 3 more variables: diagnosis_statement_stmt_text_2 <chr>,
+#> #   diagnosis_statement_stmt_flag_3 <chr>,
+#> #   diagnosis_statement_stmt_text_3 <chr>
+#> 
+#> $original_diagnosis
+#> # A tibble: 1 × 8
+#>      id modality diagnosis_statement_stmt_flag diagnosis_state… diagnosis_state…
+#>   <dbl> <chr>    <chr>                         <chr>            <chr>           
+#> 1     1 RESTING  ENDSLINE                      Statement Text(… ENDSLINE        
+#> # … with 3 more variables: diagnosis_statement_stmt_text_2 <chr>,
+#> #   diagnosis_statement_stmt_flag_3 <chr>,
+#> #   diagnosis_statement_stmt_text_3 <chr>
+#> 
+#> $qrs_times_types
+#> # A tibble: 1 × 33
+#>      id qrs_number qrs_type qrs_time qrs_number_2 qrs_type_2 qrs_time_2
+#>   <dbl> <chr>      <chr>    <chr>    <chr>        <chr>      <chr>     
+#> 1     1 1          0        808      2            0          1810      
+#> # … with 26 more variables: qrs_number_3 <chr>, qrs_type_3 <chr>,
+#> #   qrs_time_3 <chr>, qrs_number_4 <chr>, qrs_type_4 <chr>, qrs_time_4 <chr>,
+#> #   qrs_number_5 <chr>, qrs_type_5 <chr>, qrs_time_5 <chr>, qrs_number_6 <chr>,
+#> #   qrs_type_6 <chr>, qrs_time_6 <chr>, qrs_number_7 <chr>, qrs_type_7 <chr>,
+#> #   qrs_time_7 <chr>, qrs_number_8 <chr>, qrs_type_8 <chr>, qrs_time_8 <chr>,
+#> #   qrs_number_9 <chr>, qrs_type_9 <chr>, qrs_time_9 <chr>,
+#> #   qrs_number_10 <chr>, qrs_type_10 <chr>, qrs_time_10 <chr>, …
+#> 
+#> $pharma_data
+#> # A tibble: 1 × 5
+#>      id pharma_r_rinterval pharma_unique_ecgid   pharma_p_pinter… pharma_cart_id
+#>   <dbl> <chr>              <chr>                 <chr>            <chr>         
+#> 1     1 1000               SCD06526477PA1005202… 1000             SCD06526477PA
 ```
 
 ### Customizing Output Results
@@ -148,29 +183,29 @@ Here, we will return only muse data, patient id and age, and test date.
 
 ``` r
 include <- list(
-  muse = NA,
-  patient_demo = c("patient_id", "patient_age", "age_units"),
-  test_demo = "acquisition_date"
+  muse_info = NA,
+  patient_demographics = c("patient_id", "patient_age", "age_units"),
+  test_demographics = "acquisition_date"
 )
 
-read_muse_xml_meta(file1, include = include)
-#> $muse
+read_muse_xml_meta(file1, include = include, id = 1)
+#> $muse_info
 #> # A tibble: 1 × 2
-#>   id                                                                muse_version
-#>   <chr>                                                             <chr>       
-#> 1 /people/m208076/packages/easyRecg/inst/extdata/muse/muse_ecg1.xml 9.0.9.18167 
+#>      id muse_version
+#>   <dbl> <chr>       
+#> 1     1 9.0.9.18167 
 #> 
-#> $patient_demo
-#> # A tibble: 1 × 3
-#>   patient_id patient_age age_units
-#>   <chr>      <chr>       <chr>    
-#> 1 JAX01234   60          YEARS    
+#> $patient_demographics
+#> # A tibble: 1 × 4
+#>   patient_id patient_age age_units    id
+#>   <chr>      <chr>       <chr>     <dbl>
+#> 1 JAX01234   60          YEARS         1
 #> 
-#> $test_demo
-#> # A tibble: 1 × 1
-#>   acquisition_date
-#>   <chr>           
-#> 1 05-10-2021
+#> $test_demographics
+#> # A tibble: 1 × 2
+#>   acquisition_date    id
+#>   <chr>            <dbl>
+#> 1 05-10-2021           1
 ```
 
 #### Blacklisting
@@ -183,25 +218,25 @@ Let’s remove all resting ecg data along with patient names:
 
 ``` r
 exclude <- list(
-  resting_ecg = NA,
-  original_resting_ecg = NA,
-  patient_demo = c("patient_last_name")
+  resting_ecg_measurements = NA,
+  original_resting_ecg_measurements = NA,
+  patient_demographics = c("patient_last_name")
 )
 
 read_muse_xml_meta(file1, exclude = exclude, ids = 1)
-#> $muse
+#> $muse_info
 #> # A tibble: 1 × 2
 #>      id muse_version
 #>   <dbl> <chr>       
 #> 1     1 9.0.9.18167 
 #> 
-#> $patient_demo
+#> $patient_demographics
 #> # A tibble: 1 × 5
 #>      id patient_id patient_age age_units gender
 #>   <dbl> <chr>      <chr>       <chr>     <chr> 
 #> 1     1 JAX01234   60          YEARS     MALE  
 #> 
-#> $test_demo
+#> $test_demographics
 #> # A tibble: 1 × 24
 #>      id data_type site  site_name acquisition_device status    edit_list_status
 #>   <dbl> <chr>     <chr> <chr>     <chr>              <chr>     <chr>           
@@ -213,6 +248,43 @@ read_muse_xml_meta(file1, exclude = exclude, ids = 1)
 #> #   overreader_id <chr>, editor_id <chr>, overreader_last_name <chr>,
 #> #   overreader_first_name <chr>, editor_last_name <chr>,
 #> #   editor_first_name <chr>, his_status <chr>
+#> 
+#> $diagnosis
+#> # A tibble: 1 × 8
+#>      id modality diagnosis_statement_stmt_flag diagnosis_state… diagnosis_state…
+#>   <dbl> <chr>    <chr>                         <chr>            <chr>           
+#> 1     1 RESTING  ENDSLINE                      Statement Text(… ENDSLINE        
+#> # … with 3 more variables: diagnosis_statement_stmt_text_2 <chr>,
+#> #   diagnosis_statement_stmt_flag_3 <chr>,
+#> #   diagnosis_statement_stmt_text_3 <chr>
+#> 
+#> $original_diagnosis
+#> # A tibble: 1 × 8
+#>      id modality diagnosis_statement_stmt_flag diagnosis_state… diagnosis_state…
+#>   <dbl> <chr>    <chr>                         <chr>            <chr>           
+#> 1     1 RESTING  ENDSLINE                      Statement Text(… ENDSLINE        
+#> # … with 3 more variables: diagnosis_statement_stmt_text_2 <chr>,
+#> #   diagnosis_statement_stmt_flag_3 <chr>,
+#> #   diagnosis_statement_stmt_text_3 <chr>
+#> 
+#> $qrs_times_types
+#> # A tibble: 1 × 33
+#>      id qrs_number qrs_type qrs_time qrs_number_2 qrs_type_2 qrs_time_2
+#>   <dbl> <chr>      <chr>    <chr>    <chr>        <chr>      <chr>     
+#> 1     1 1          0        808      2            0          1810      
+#> # … with 26 more variables: qrs_number_3 <chr>, qrs_type_3 <chr>,
+#> #   qrs_time_3 <chr>, qrs_number_4 <chr>, qrs_type_4 <chr>, qrs_time_4 <chr>,
+#> #   qrs_number_5 <chr>, qrs_type_5 <chr>, qrs_time_5 <chr>, qrs_number_6 <chr>,
+#> #   qrs_type_6 <chr>, qrs_time_6 <chr>, qrs_number_7 <chr>, qrs_type_7 <chr>,
+#> #   qrs_time_7 <chr>, qrs_number_8 <chr>, qrs_type_8 <chr>, qrs_time_8 <chr>,
+#> #   qrs_number_9 <chr>, qrs_type_9 <chr>, qrs_time_9 <chr>,
+#> #   qrs_number_10 <chr>, qrs_type_10 <chr>, qrs_time_10 <chr>, …
+#> 
+#> $pharma_data
+#> # A tibble: 1 × 5
+#>      id pharma_r_rinterval pharma_unique_ecgid   pharma_p_pinter… pharma_cart_id
+#>   <dbl> <chr>              <chr>                 <chr>            <chr>         
+#> 1     1 1000               SCD06526477PA1005202… 1000             SCD06526477PA
 ```
 
 #### Mixed filtering
@@ -226,13 +298,13 @@ Here, we will return all patient demographics except name:
 
 ``` r
 # Only consider the patient demographics
-include <- list(patient_demo = NA)
+include <- list(patient_demographics = NA)
 
 # Remove patient name
-exclude <- list(patient_demo = c("patient_last_name"))
+exclude <- list(patient_demographics = c("patient_last_name"))
 
 read_muse_xml_meta(file1, include = include, exclude = exclude, ids = 1)
-#> $patient_demo
+#> $patient_demographics
 #> # A tibble: 1 × 5
 #>      id patient_id patient_age age_units gender
 #>   <dbl> <chr>      <chr>       <chr>     <chr> 

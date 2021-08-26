@@ -78,7 +78,7 @@ dim(all_muse$ecg_array)
 
 ## Retrieving ECG Meta Data
 
-By default, `read_muse_xml_meta` returns the meta data related to Muse versions, patient and test demographics, resting ECG measurements, and original resting ECG measurements.  The returned object is a named list of data frames (or tibbles). The function can take a file path or a collection of file paths.  If more than one file path is present, the results are appended together.
+By default, `read_muse_xml_meta` returns all meta data available.  The returned object is a named list of data frames (or tibbles). The function can take a file path or a collection of file paths.  If more than one file path is present, the results are appended together.
 
 ```{r}
 meta1 <- read_muse_xml_meta(file1, ids = 1)
@@ -97,12 +97,12 @@ Here, we will return only muse data, patient id and age, and test date.
 
 ```{r}
 include <- list(
-  muse = NA,
-  patient_demo = c("patient_id", "patient_age", "age_units"),
-  test_demo = "acquisition_date"
+  muse_info = NA,
+  patient_demographics = c("patient_id", "patient_age", "age_units"),
+  test_demographics = "acquisition_date"
 )
 
-read_muse_xml_meta(file1, include = include)
+read_muse_xml_meta(file1, include = include, id = 1)
 ```
 
 
@@ -114,9 +114,9 @@ Let's remove all resting ecg data along with patient names:
 
 ```{r}
 exclude <- list(
-  resting_ecg = NA,
-  original_resting_ecg = NA,
-  patient_demo = c("patient_last_name")
+  resting_ecg_measurements = NA,
+  original_resting_ecg_measurements = NA,
+  patient_demographics = c("patient_last_name")
 )
 
 read_muse_xml_meta(file1, exclude = exclude, ids = 1)
@@ -132,10 +132,10 @@ Here, we will return all patient demographics except name:
 
 ```{r}
 # Only consider the patient demographics
-include <- list(patient_demo = NA)
+include <- list(patient_demographics = NA)
 
 # Remove patient name
-exclude <- list(patient_demo = c("patient_last_name"))
+exclude <- list(patient_demographics = c("patient_last_name"))
 
 read_muse_xml_meta(file1, include = include, exclude = exclude, ids = 1)
 ```

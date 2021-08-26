@@ -1,0 +1,99 @@
+---
+title: "Sample Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sample Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# R and RStudio Installation
+
+If you do not already have an environment ready to run R code, we recommend installing it along with RStudio.  For more information on this process, please see [here](https://rstudio-education.github.io/hopr/starting.html).
+
+# Project Setup 
+
+Once you have RStudio up and running, we suggest [creating a new R project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) and placing all ECG XML files in a sub-directory.  The file structure may look something like this:
+
+![Folder Structure](workflow_folders.png)
+
+The RStudio file panel may look something like this:
+
+![Folder Structure](workflow_rstudio.png)
+
+# Installing easyRecg
+
+You can run the following lines of code to install `easyRecg`.  Depending on what dependencies you already have in your compute environment, this could take several minutes:
+
+```{r eval=FALSE}
+install.packages("devtools")
+devtools::install_github("rickeycarter/easyRecg")
+```
+
+# Extracting Data
+
+Once you have your environment configured, you can start using the package to extract your data.  We recommend including all the code below in a single R script that can be saved and shared. 
+
+Load the `easyRecg` package:
+
+```{r include=FALSE}
+devtools::load_all(".")
+```
+
+```{r eval = FALSE}
+library(easyRecg)
+```
+
+```{r include=FALSE}
+dir.create('ecg_files')
+from <- system.file("extdata", path = "muse", package = "easyRecg")
+to <- "ecg_files"
+files <- list.files(from, full.names = TRUE)
+file.copy(files, to, recursive = TRUE)
+```
+
+
+## Extract and save the ECG 12-lead data
+
+```{r}
+all_muse <- read_muse_xml_directory("ecg_files")
+save(all_muse, file = "ecg_lead_data.Rda")
+```
+
+## Extract and save meta data
+
+For more info on whitelisting, blacklisting, or mixed filtering, please see the readme.
+
+```{r eval = FALSE}
+# Get list of files to read
+all_files <- list.files("ecg_files", full.names = TRUE)
+
+# Decide what meta data to share - this can be changes
+exclude <- list(
+  patient_demographics = c("patient_last_name", "patient_first_name")
+)
+
+meta_data <- read_muse_xml_meta(all_files, exclude = exclude)
+
+# Inspect data - ensure it only contains appropriate data
+meta_data
+
+# save data
+save(meta_data, file = "ecg_meta_data.Rda")
+```
+
+
+```{r include = FALSE}
+file.remove("ecg_meta_data.Rda")
+file.remove("ecg_lead_data.Rda")
+unlink("ecg_files", recursive=TRUE)
+```
+
+
