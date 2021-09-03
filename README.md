@@ -3,6 +3,9 @@
 
 # easyRecg
 
+`easyRecg` is designed to host simple tools to facilitate reading and
+writing digital ECG files.
+
 <!-- badges: start -->
 <!-- badges: end -->
 
@@ -74,12 +77,10 @@ dim(all_muse$ecg_array)
 #> [1]    3 5000   12    1
 ```
 
-## Retrieving ECG Meta Data
+## Retrieving Meta Data
 
-By default, `read_muse_xml_meta` returns all meta data available. The
-returned object is a named list of data frames (or tibbles). The
-function can take a file path or a collection of file paths. If more
-than one file path is present, the results are appended together.
+For more information on how to filter the provided meta data, please see
+the “Filtering Meta Data” vignette.
 
 ``` r
 meta1 <- read_muse_xml_meta(file1, ids = 1)
@@ -165,150 +166,6 @@ meta1
 #>      id pharma_r_rinterval pharma_unique_ecgid   pharma_p_pinter… pharma_cart_id
 #>   <dbl> <chr>              <chr>                 <chr>            <chr>         
 #> 1     1 1000               SCD06526477PA1005202… 1000             SCD06526477PA
-```
-
-### Customizing Output Results
-
-In some cases, you may not want all data returned (e.g. to avoid sharing
-PHI). To do so, you can take a whitelisting, blacklisting, or mixed
-approach.
-
-#### Whitelisting
-
-To include only certain data sets or columns, you can specify a named
-list of dataframes and columns. If a named element is `NA`, all
-variables from that dataset are returned.
-
-Here, we will return only muse data, patient id and age, and test date.
-
-``` r
-include <- list(
-  muse_info = NA,
-  patient_demographics = c("patient_id", "patient_age", "age_units"),
-  test_demographics = "acquisition_date"
-)
-
-read_muse_xml_meta(file1, include = include, id = 1)
-#> $muse_info
-#> # A tibble: 1 × 2
-#>      id muse_version
-#>   <dbl> <chr>       
-#> 1     1 9.0.9.18167 
-#> 
-#> $patient_demographics
-#> # A tibble: 1 × 4
-#>   patient_id patient_age age_units    id
-#>   <chr>      <chr>       <chr>     <dbl>
-#> 1 JAX01234   60          YEARS         1
-#> 
-#> $test_demographics
-#> # A tibble: 1 × 2
-#>   acquisition_date    id
-#>   <chr>            <dbl>
-#> 1 05-10-2021           1
-```
-
-#### Blacklisting
-
-Similar to whitelisting, you can specifiy specific data sets or elements
-to exclude. Here, if a named element is `NA`, the entire dataset is
-removed.
-
-Let’s remove all resting ecg data along with patient names:
-
-``` r
-exclude <- list(
-  resting_ecg_measurements = NA,
-  original_resting_ecg_measurements = NA,
-  patient_demographics = c("patient_last_name")
-)
-
-read_muse_xml_meta(file1, exclude = exclude, ids = 1)
-#> $muse_info
-#> # A tibble: 1 × 2
-#>      id muse_version
-#>   <dbl> <chr>       
-#> 1     1 9.0.9.18167 
-#> 
-#> $patient_demographics
-#> # A tibble: 1 × 5
-#>      id patient_id patient_age age_units gender
-#>   <dbl> <chr>      <chr>       <chr>     <chr> 
-#> 1     1 JAX01234   60          YEARS     MALE  
-#> 
-#> $test_demographics
-#> # A tibble: 1 × 24
-#>      id data_type site  site_name acquisition_device status    edit_list_status
-#>   <dbl> <chr>     <chr> <chr>     <chr>              <chr>     <chr>           
-#> 1     1 RESTING   11    Research  MAC55              CONFIRMED Confirmed       
-#> # … with 17 more variables: priority <chr>, location <chr>,
-#> #   location_name <chr>, acquisition_time <chr>, acquisition_date <chr>,
-#> #   cart_number <chr>, acquisition_software_version <chr>,
-#> #   analysis_software_version <chr>, edit_time <chr>, edit_date <chr>,
-#> #   overreader_id <chr>, editor_id <chr>, overreader_last_name <chr>,
-#> #   overreader_first_name <chr>, editor_last_name <chr>,
-#> #   editor_first_name <chr>, his_status <chr>
-#> 
-#> $diagnosis
-#> # A tibble: 1 × 8
-#>      id modality diagnosis_statement_stmt_flag diagnosis_state… diagnosis_state…
-#>   <dbl> <chr>    <chr>                         <chr>            <chr>           
-#> 1     1 RESTING  ENDSLINE                      Statement Text(… ENDSLINE        
-#> # … with 3 more variables: diagnosis_statement_stmt_text_2 <chr>,
-#> #   diagnosis_statement_stmt_flag_3 <chr>,
-#> #   diagnosis_statement_stmt_text_3 <chr>
-#> 
-#> $original_diagnosis
-#> # A tibble: 1 × 8
-#>      id modality diagnosis_statement_stmt_flag diagnosis_state… diagnosis_state…
-#>   <dbl> <chr>    <chr>                         <chr>            <chr>           
-#> 1     1 RESTING  ENDSLINE                      Statement Text(… ENDSLINE        
-#> # … with 3 more variables: diagnosis_statement_stmt_text_2 <chr>,
-#> #   diagnosis_statement_stmt_flag_3 <chr>,
-#> #   diagnosis_statement_stmt_text_3 <chr>
-#> 
-#> $qrs_times_types
-#> # A tibble: 1 × 33
-#>      id qrs_number qrs_type qrs_time qrs_number_2 qrs_type_2 qrs_time_2
-#>   <dbl> <chr>      <chr>    <chr>    <chr>        <chr>      <chr>     
-#> 1     1 1          0        808      2            0          1810      
-#> # … with 26 more variables: qrs_number_3 <chr>, qrs_type_3 <chr>,
-#> #   qrs_time_3 <chr>, qrs_number_4 <chr>, qrs_type_4 <chr>, qrs_time_4 <chr>,
-#> #   qrs_number_5 <chr>, qrs_type_5 <chr>, qrs_time_5 <chr>, qrs_number_6 <chr>,
-#> #   qrs_type_6 <chr>, qrs_time_6 <chr>, qrs_number_7 <chr>, qrs_type_7 <chr>,
-#> #   qrs_time_7 <chr>, qrs_number_8 <chr>, qrs_type_8 <chr>, qrs_time_8 <chr>,
-#> #   qrs_number_9 <chr>, qrs_type_9 <chr>, qrs_time_9 <chr>,
-#> #   qrs_number_10 <chr>, qrs_type_10 <chr>, qrs_time_10 <chr>, …
-#> 
-#> $pharma_data
-#> # A tibble: 1 × 5
-#>      id pharma_r_rinterval pharma_unique_ecgid   pharma_p_pinter… pharma_cart_id
-#>   <dbl> <chr>              <chr>                 <chr>            <chr>         
-#> 1     1 1000               SCD06526477PA1005202… 1000             SCD06526477PA
-```
-
-#### Mixed filtering
-
-If you want more flexibility but don’t want to type out all
-names/variables, you can use both `include` and `exclude`. The same
-logic above applies here, however the `include` is always executed
-first.
-
-Here, we will return all patient demographics except name:
-
-``` r
-# Only consider the patient demographics
-include <- list(patient_demographics = NA)
-
-# Remove patient name
-exclude <- list(patient_demographics = c("patient_last_name"))
-
-read_muse_xml_meta(file1, include = include, exclude = exclude, ids = 1)
-#> $patient_demographics
-#> # A tibble: 1 × 5
-#>      id patient_id patient_age age_units gender
-#>   <dbl> <chr>      <chr>       <chr>     <chr> 
-#> 1     1 JAX01234   60          YEARS     MALE
 ```
 
 ## Data Sources
