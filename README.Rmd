@@ -15,6 +15,8 @@ knitr::opts_chunk$set(
 
 # easyRecg
 
+`easyRecg` is designed to host simple tools to facilitate reading and writing digital ECG files.
+
 <!-- badges: start -->
 <!-- badges: end -->
 
@@ -76,69 +78,17 @@ names(all_muse)
 dim(all_muse$ecg_array)
 ```
 
-## Retrieving ECG Meta Data
+## Retrieving Meta Data
 
-By default, `read_muse_xml_meta` returns all meta data available.  The returned object is a named list of data frames (or tibbles). The function can take a file path or a collection of file paths.  If more than one file path is present, the results are appended together.
+For more information on how to filter the provided meta data, please see the "Filtering Meta Data" vignette. 
 
 ```{r}
 meta1 <- read_muse_xml_meta(file1, ids = 1)
 meta1
 ```
 
-### Customizing Output Results 
-
-In some cases, you may not want all data returned (e.g. to avoid sharing PHI).  To do so, you can take a whitelisting, blacklisting, or mixed approach.
-
-#### Whitelisting
-
-To include only certain data sets or columns, you can specify a named list of dataframes and columns.  If a named element is `NA`, all variables from that dataset are returned.
-
-Here, we will return only muse data, patient id and age, and test date.
-
-```{r}
-include <- list(
-  muse_info = NA,
-  patient_demographics = c("patient_id", "patient_age", "age_units"),
-  test_demographics = "acquisition_date"
-)
-
-read_muse_xml_meta(file1, include = include, id = 1)
-```
 
 
-#### Blacklisting
-
-Similar to whitelisting, you can specifiy specific data sets or elements to exclude.  Here, if a named element is `NA`, the entire dataset is removed.
-
-Let's remove all resting ecg data along with patient names:
-
-```{r}
-exclude <- list(
-  resting_ecg_measurements = NA,
-  original_resting_ecg_measurements = NA,
-  patient_demographics = c("patient_last_name")
-)
-
-read_muse_xml_meta(file1, exclude = exclude, ids = 1)
-```
-
-
-#### Mixed filtering
-
-If you want more flexibility but don't want to type out all names/variables, you can use both `include` and `exclude`.  The same logic above applies here, however the `include` is always executed first.
-
-Here, we will return all patient demographics except name:
-
-
-```{r}
-# Only consider the patient demographics
-include <- list(patient_demographics = NA)
-
-# Remove patient name
-exclude <- list(patient_demographics = c("patient_last_name"))
-
-read_muse_xml_meta(file1, include = include, exclude = exclude, ids = 1)
-```
 
 ## Data Sources
 
