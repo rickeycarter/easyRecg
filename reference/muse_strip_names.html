@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • easyRecg</title>
+<title>Remove patient names from a MUSE XML — muse_strip_names • easyRecg</title>
 
 
 <!-- jquery -->
@@ -34,7 +34,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Remove patient names from a MUSE XML — muse_strip_names" />
+<meta property="og:description" content="Reads an XML file, removes patient first and last name, and writes out a new XML" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -52,7 +54,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -109,78 +111,37 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Remove patient names from a MUSE XML</h1>
+    
+    <div class="hidden name"><code>muse_strip_names.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Reads an XML file, removes patient first and last name, and writes out a new XML</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>muse_strip_names</span><span class='op'>(</span><span class='va'>file</span>, <span class='va'>output_file</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="ecg_example.html">ecg_example()</a></code> </p>
-        </td>
-        <td><p>Get path to easyRecg example file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="muse_strip_names.html">muse_strip_names()</a></code> </p>
-        </td>
-        <td><p>Remove patient names from a MUSE XML</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_muse_xml_directory.html">read_muse_xml_directory()</a></code> </p>
-        </td>
-        <td><p>Read a directory of XML ECGs exported from MUSE. Returns an array of size (n_xmls, 5000, 12, 1).</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_muse_xml_ecg.html">read_muse_xml_ecg()</a></code> </p>
-        </td>
-        <td><p>Read a single XML representation of an ECG exported from MUSE. Returns a matrix with data for 12-leads</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_muse_xml_meta.html">read_muse_xml_meta()</a></code> </p>
-        </td>
-        <td><p>Extract meta data from MUSE XML files</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_numpy.html">read_numpy()</a></code> </p>
-        </td>
-        <td><p>Read a numpy (python) data array into R</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="write_numpy.html">write_numpy()</a></code> </p>
-        </td>
-        <td><p>Read a numpy (python) data array into R</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>file</th>
+      <td><p>Input file name</p></td>
+    </tr>
+    <tr>
+      <th>output_file</th>
+      <td><p>Output file name</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Silently returns <code>output_file</code></p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
